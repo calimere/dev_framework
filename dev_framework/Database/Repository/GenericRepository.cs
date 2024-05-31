@@ -100,6 +100,21 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entity, startTime);
             return entity;
         }
+        /// <summary>
+        /// Retrieves an entity from the database by its ID.
+        /// </summary>
+        /// <param name="methodName">The name of the calling method.</param>
+        /// <param name="id">The ID of the entity to retrieve.</param>
+        /// <returns>The retrieved entity.</returns>
+        public T GetItem(string methodName, string id)
+        {
+            var startTime = _logger.Debut(methodName, id);
+            T? entity = null;
+            try { entity = _dbContext.Set<T>().Find(id); }
+            catch (Exception ex) { _logger.Error(methodName, ex, id); }
+            _logger.Fin(methodName, entity, startTime);
+            return entity;
+        }
 
         /// <summary>
         /// Asynchronously retrieves an entity from the database by its ID.
@@ -108,6 +123,15 @@ namespace dev_framework.Database.Repository
         /// <param name="id">The ID of the entity to retrieve.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the retrieved entity.</returns>
         public async Task<T> GetItemAsync(string methodName, int id)
+        {
+            var startTime = _logger.Debut(methodName, id);
+            T? entity = null;
+            try { entity = await _dbContext.Set<T>().FindAsync(id); }
+            catch (Exception ex) { _logger.Error(methodName, ex, id); }
+            _logger.Fin(methodName, entity, startTime);
+            return entity;
+        }
+        public async Task<T> GetItemAsync(string methodName, string id)
         {
             var startTime = _logger.Debut(methodName, id);
             T? entity = null;
@@ -188,6 +212,10 @@ namespace dev_framework.Database.Repository
         /// <param name="key">The key property to match the IDs against.</param>
         /// <returns>The retrieved entities.</returns>
         public IEnumerable<T> GetItems(string methodName, int[] ids, string key)
+        {
+            return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
+        }
+        public IEnumerable<T> GetItems(string methodName, string[] ids, string key)
         {
             return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
         }
