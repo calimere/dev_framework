@@ -27,11 +27,12 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be added.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Add(string methodName, T entity)
+        public DatabaseMessage Add(T entity)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
-            try { retour = Add(entity); }
+            try { retour = add(entity); }
             catch (Exception ex) { _logger.Error(methodName, ex, entity); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
@@ -42,11 +43,12 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be added.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Add(string methodName, T[] entity)
+        public DatabaseMessage Add(T[] entity)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
-            try { retour = Add(entity); }
+            try { retour = add(entity); }
             catch (Exception ex) { _logger.Error<T>(methodName, ex, entity); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
@@ -57,11 +59,12 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be updated.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Update(string methodName, T[] entity)
+        public DatabaseMessage Update(T[] entity)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
-            try { retour = Update(entity); }
+            try { retour = update(entity); }
             catch (Exception ex) { _logger.Error<T>(methodName, ex, entity); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
@@ -73,11 +76,12 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be updated.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Update(string methodName, T entity)
+        public DatabaseMessage Update(T entity)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
-            try { retour = Update(entity); }
+            try { retour = update(entity); }
             catch (Exception ex) { _logger.Error(methodName, ex, entity); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
@@ -91,12 +95,13 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="id">The ID of the entity to retrieve.</param>
         /// <returns>The retrieved entity.</returns>
-        public T GetItem(string methodName, int id)
+        public T GetItem(int id)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, id);
             T? entity = null;
             try { entity = _dbContext.Set<T>().Find(id); }
-            catch (Exception ex) { _logger.Error(methodName, ex, id); }
+            catch (Exception ex) { _logger.ErrorById(methodName, ex, id); }
             _logger.Fin(methodName, entity, startTime);
             return entity;
         }
@@ -106,8 +111,9 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="id">The ID of the entity to retrieve.</param>
         /// <returns>The retrieved entity.</returns>
-        public T GetItem(string methodName, string id)
+        public T GetItem(string id)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, id);
             T? entity = null;
             try { entity = _dbContext.Set<T>().Find(id); }
@@ -122,17 +128,19 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="id">The ID of the entity to retrieve.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the retrieved entity.</returns>
-        public async Task<T> GetItemAsync(string methodName, int id)
+        public async Task<T> GetItemAsync(int id)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, id);
             T? entity = null;
             try { entity = await _dbContext.Set<T>().FindAsync(id); }
-            catch (Exception ex) { _logger.Error(methodName, ex, id); }
+            catch (Exception ex) { _logger.ErrorById(methodName, ex, id); }
             _logger.Fin(methodName, entity, startTime);
             return entity;
         }
-        public async Task<T> GetItemAsync(string methodName, string id)
+        public async Task<T> GetItemAsync(string id)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, id);
             T? entity = null;
             try { entity = await _dbContext.Set<T>().FindAsync(id); }
@@ -146,8 +154,9 @@ namespace dev_framework.Database.Repository
         /// </summary>
         /// <param name="methodName">The name of the calling method.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the retrieved entities.</returns>
-        public async Task<IEnumerable<T>> GetAll(string methodName)
+        public async Task<IEnumerable<T>> GetAll()
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName);
             IEnumerable<T> entities = null;
             try { entities = await _dbContext.Set<T>().ToArrayAsync(); }
@@ -162,8 +171,9 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be removed.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Remove(string methodName, T entity)
+        public DatabaseMessage Remove(T entity)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
             DatabaseMessage dbMessage = null;
             try
@@ -185,8 +195,9 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entities">The entities to be removed.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Remove(string methodName, T[] entities)
+        public DatabaseMessage Remove(T[] entities)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entities);
             DatabaseMessage dbMessage = null;
             try
@@ -211,11 +222,11 @@ namespace dev_framework.Database.Repository
         /// <param name="ids">The IDs of the entities to retrieve.</param>
         /// <param name="key">The key property to match the IDs against.</param>
         /// <returns>The retrieved entities.</returns>
-        public IEnumerable<T> GetItems(string methodName, int[] ids, string key)
+        public IEnumerable<T> GetItems(int[] ids, string key)
         {
             return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
         }
-        public IEnumerable<T> GetItems(string methodName, string[] ids, string key)
+        public IEnumerable<T> GetItems(string[] ids, string key)
         {
             return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
         }
@@ -301,7 +312,7 @@ namespace dev_framework.Database.Repository
 
         #region Private
 
-        private DatabaseMessage Add(T entity)
+        private DatabaseMessage add(T entity)
         {
             try
             {
@@ -319,7 +330,7 @@ namespace dev_framework.Database.Repository
             }
         }
 
-        private DatabaseMessage Add(T[] entities)
+        private DatabaseMessage add(T[] entities)
         {
             try
             {
@@ -336,7 +347,7 @@ namespace dev_framework.Database.Repository
             }
         }
 
-        private DatabaseMessage Update(T entity)
+        private DatabaseMessage update(T entity)
         {
             try
             {
@@ -352,7 +363,7 @@ namespace dev_framework.Database.Repository
             }
         }
 
-        private DatabaseMessage Update(T[] entities)
+        private DatabaseMessage update(T[] entities)
         {
             try
             {

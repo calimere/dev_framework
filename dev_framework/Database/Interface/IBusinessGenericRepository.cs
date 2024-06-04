@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace dev_framework.Database.Interface
 {
-    public interface IBusinessGenericRepository<W,T> where W: DbContext where T : BusinessObject
+    public interface IBusinessGenericRepository<W,T> : IGenericRepository<W,T> where W: DbContext where T : BusinessObject
     {
-        IEnumerable<T> GetAll(string methodName, bool withDeleted = false);
-        DatabaseMessage DeleteItem(string methodName, int id);
-        DatabaseMessage DeleteItems(string methodName, int[] ids, string key);
+        IEnumerable<T> GetAll(bool withDeleted = false);
+        DatabaseMessage DeleteItem(int id);
+        DatabaseMessage DeleteItems(int[] ids, string key);
     }
 }

@@ -51,6 +51,9 @@ namespace dev_framework.Manager
         /// <returns>The Serilog logger.</returns>
         private Logger GetLogger()
         {
+            if (_eSerilogType == ESerilogType.File && !Directory.Exists(_path))
+                Directory.CreateDirectory(_path);
+
             switch (_eSerilogType)
             {
                 case ESerilogType.File:
@@ -139,7 +142,7 @@ namespace dev_framework.Manager
         /// <param name="ex">The exception.</param>
         /// <param name="id">The ID.</param>
         /// <returns>The database message.</returns>
-        public void Error(string methodName, Exception ex, int id, bool throwEx = false)
+        public void ErrorById(string methodName, Exception ex, int id, bool throwEx = false)
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Error]");
@@ -149,6 +152,19 @@ namespace dev_framework.Manager
 
             if (!string.IsNullOrEmpty(_discordUrl))
                 NotificationManager.Current.PublishDiscordWebHook(ex, id, _discordUrl);
+
+            if (throwEx)
+                throw ex;
+        }
+        public void Error(string methodName, Exception ex, bool throwEx = false)
+        {
+            StringBuilder log = new StringBuilder();
+            log.Append("[Error]");
+            log.AppendLine($"Exception : {JsonConvert.SerializeObject(ex, Formatting.Indented)}");
+            GetLogger().Error(log.ToString());
+
+            if (!string.IsNullOrEmpty(_discordUrl))
+                NotificationManager.Current.PublishDiscordWebHook(ex, null, _discordUrl);
 
             if (throwEx)
                 throw ex;
@@ -189,7 +205,7 @@ namespace dev_framework.Manager
             if (!string.IsNullOrEmpty(_discordUrl))
                 NotificationManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
 
-            if(throwEx)
+            if (throwEx)
                 throw ex;
         }
 
@@ -217,7 +233,7 @@ namespace dev_framework.Manager
             if (!string.IsNullOrEmpty(_discordUrl))
                 NotificationManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
 
-            if(throwEx)
+            if (throwEx)
                 throw ex;
         }
 

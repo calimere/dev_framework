@@ -19,8 +19,9 @@ namespace dev_framework.Database.Repository
         public BusinessGenericRepository(W context, SerilogManager logger) : base(context, logger)
         {
         }
-        public IEnumerable<T> GetAll(string methodName, bool withDeleted = false)
+        public IEnumerable<T> GetAll(bool withDeleted = false)
         {
+            var methodName= SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName);
             IEnumerable<T> entities = null;
             try
@@ -33,23 +34,25 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entities, startTime);
             return entities;
         }
-        public DatabaseMessage DeleteItem(string methodName, int id)
+        public DatabaseMessage DeleteItem(int id)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, id);
             DatabaseMessage retour = null;
 
-            var entity = GetItem(methodName, id);
+            var entity = GetItem(id);
             try { retour = entity != null ? Delete(entity) : new DatabaseMessage(EnumDataBaseMessage.NoChanges); }
             catch (Exception ex) { _logger.Error(methodName, ex, entity); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
         }
-        public DatabaseMessage DeleteItems(string methodName, int[] ids, string key)
+        public DatabaseMessage DeleteItems(int[] ids, string key)
         {
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, ids);
             DatabaseMessage retour = null;
 
-            var items = GetItems(methodName, ids, key);
+            var items = GetItems(ids, key);
             try { retour = items != null ? Delete(items.ToArray()) : new DatabaseMessage(EnumDataBaseMessage.NoChanges); }
             catch (Exception ex) { _logger.Error(methodName, ex, items); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);

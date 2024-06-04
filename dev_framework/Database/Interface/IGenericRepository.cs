@@ -7,17 +7,17 @@ namespace dev_framework.Database
 {
     public interface IGenericRepository<W, T> where W : DbContext where T : class
     {
-        DatabaseMessage Add(string methodName, T entity);
-        DatabaseMessage Update(string methodName, T entity);
-        T GetItem(string methodName, int id);
-        T GetItem(string methodName, string id);
-        Task<T> GetItemAsync(string methodName, int id);
-        Task<T> GetItemAsync(string methodName, string id);
+        DatabaseMessage Add(T entity);
+        DatabaseMessage Update(T entity);
+        T GetItem(int id);
+        T GetItem(string id);
+        Task<T> GetItemAsync(int id);
+        Task<T> GetItemAsync(string id);
 
-        Task<IEnumerable<T>> GetAll(string methodName);
-        DatabaseMessage Remove(string methodName, T entity);
-        DatabaseMessage Remove(string methodName, T[] entities);
-        IEnumerable<T> GetItems(string methodName, int[] ids, string key);
-        IEnumerable<T> GetItems(string methodName, string[] ids, string key);
+        Task<IEnumerable<T>> GetAll();
+        DatabaseMessage Remove(T entity);
+        DatabaseMessage Remove(T[] entities);
+        IEnumerable<T> GetItems(int[] ids, string key);
+        IEnumerable<T> GetItems(string[] ids, string key);
     }
 }
