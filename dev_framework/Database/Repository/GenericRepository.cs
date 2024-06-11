@@ -224,11 +224,11 @@ namespace dev_framework.Database.Repository
         /// <returns>The retrieved entities.</returns>
         public IEnumerable<T> GetItems(int[] ids, string key)
         {
-            return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
+            return DbContextExtensions.FindEntities<T, int>(_dbContext, ids);
         }
         public IEnumerable<T> GetItems(string[] ids, string key)
         {
-            return _dbContext.Set<T>().Where(m => m.GetType().GetProperty(key).GetValue(m, null).Equals(ids));
+            return DbContextExtensions.FindEntities<T, string>(_dbContext, ids);
         }
 
         #region SQL
@@ -383,5 +383,17 @@ namespace dev_framework.Database.Repository
         private T GetPropValue<T>(object src, string propName) { return (T)src.GetType().GetProperty(propName).GetValue(src, null); }
 
         #endregion
+    }
+
+    public static class DbContextExtensions
+    {
+        public static T[] FindEntities<T, TKey>(this DbContext context, params TKey[] ids) where T : class
+        {
+            var dbSet = context.Set<T>();
+            var keyProperty = context.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties[0];
+
+            // Utilisation de LINQ pour rechercher les entités par leurs clés primaires
+            return dbSet.Where(e => ids.Contains(EF.Property<TKey>(e, keyProperty.Name))).ToArray();
+        }
     }
 }

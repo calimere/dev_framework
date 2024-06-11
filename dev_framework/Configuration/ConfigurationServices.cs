@@ -56,7 +56,7 @@ namespace dev_framework.Configuration
                 Directory.CreateDirectory(folder);
             return folder;
         }
-        private string GetDataProjectFolder(string project)
+        public string GetDataProjectFolder(string project)
         {
             var folder = string.Format("{0}{1}/", GetDataFolder(), project);
             if (!Directory.Exists(folder))

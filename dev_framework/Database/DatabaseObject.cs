@@ -15,8 +15,13 @@ namespace dev_framework.Database
     public class SupervisedDatabaseObject : DatabaseObject
     {
         public DateTime modified { get; set; }
-        public int modified_by { get; set; }
-    }
+        public string modified_by { get; set; }
+
+        public SupervisedDatabaseObject()
+        {
+            modified = DateTime.Now;
+        }
+}
 
     public abstract class BusinessObject : DatabaseObject
     {

@@ -55,7 +55,7 @@ namespace dev_framework.Database.Repository
             var items = GetItems(ids, key);
             try { retour = items != null ? Delete(items.ToArray()) : new DatabaseMessage(EnumDataBaseMessage.NoChanges); }
             catch (Exception ex) { _logger.Error(methodName, ex, items); }
-            _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
+            _logger.Fin(methodName, retour.GetReturnValue<T[]>(), startTime);
             return retour;
         }
 

@@ -134,6 +134,14 @@ namespace dev_framework.Manager
 
             GetLogger().Information(log.ToString());
         }
+        public void Fin<T>(string methodName, DateTime debut) where T : class
+        {
+            StringBuilder log = new StringBuilder();
+            log.Append("[Fin]");
+            log.Append($" : [{methodName}] --- Duration : {GetDuration(debut, DateTime.Now)} seconde(s)");
+            GetLogger().Information(log.ToString());
+        }
+
 
         /// <summary>
         /// Logs an error with the specified method name, exception, and ID.
