@@ -33,7 +33,10 @@ namespace dev_framework.Database.Repository
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
             try { retour = add(entity); }
-            catch (Exception ex) { _logger.Error(methodName, ex, entity); }
+            catch (Exception ex)
+            {
+                _logger.Error(methodName, ex, entity, true);
+            }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
         }
@@ -49,7 +52,10 @@ namespace dev_framework.Database.Repository
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
             try { retour = add(entity); }
-            catch (Exception ex) { _logger.Error<T>(methodName, ex, entity); }
+            catch (Exception ex)
+            {
+                _logger.Error<T>(methodName, ex, entity, true);
+            }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
         }
@@ -65,7 +71,7 @@ namespace dev_framework.Database.Repository
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
             try { retour = update(entity); }
-            catch (Exception ex) { _logger.Error<T>(methodName, ex, entity); }
+            catch (Exception ex) { _logger.Error<T>(methodName, ex, entity, true); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
         }
@@ -82,7 +88,7 @@ namespace dev_framework.Database.Repository
             var startTime = _logger.Debut(methodName, entity);
             var retour = new DatabaseMessage(EnumDataBaseMessage.NoChanges);
             try { retour = update(entity); }
-            catch (Exception ex) { _logger.Error(methodName, ex, entity); }
+            catch (Exception ex) { _logger.Error(methodName, ex, entity, true); }
             _logger.Fin(methodName, retour.GetReturnValue<T>(), startTime);
             return retour;
         }
@@ -154,7 +160,17 @@ namespace dev_framework.Database.Repository
         /// </summary>
         /// <param name="methodName">The name of the calling method.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the retrieved entities.</returns>
-        public async Task<IEnumerable<T>> GetAll()
+        public virtual IEnumerable<T> GetAll()
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try { entities = _dbContext.Set<T>().ToArray(); }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName);
@@ -184,7 +200,7 @@ namespace dev_framework.Database.Repository
                 else if (retour == 0) dbMessage = new DatabaseMessage(EnumDataBaseMessage.NoChanges) { Count = 1 };
                 else dbMessage = new DatabaseMessage(EnumDataBaseMessage.Success) { Count = 1, ReturnValue = entity };
             }
-            catch (Exception ex) { _logger.Error(methodName, ex, entity); }
+            catch (Exception ex) { _logger.Error(methodName, ex, entity, true); }
             _logger.Fin(methodName, dbMessage.GetReturnValue<T>(), startTime);
             return dbMessage;
         }
@@ -210,7 +226,7 @@ namespace dev_framework.Database.Repository
                 else if (retour == 0) dbMessage = new DatabaseMessage(EnumDataBaseMessage.NoChanges) { Count = entities.Length, ReturnValue = entities };
                 else dbMessage = new DatabaseMessage(EnumDataBaseMessage.Success) { Count = entities.Length, ReturnValue = entities };
             }
-            catch (Exception ex) { _logger.Error<T>(methodName, ex, entities); }
+            catch (Exception ex) { _logger.Error<T>(methodName, ex, entities, true); }
             _logger.Fin(methodName, dbMessage.GetReturnValue<T>(), startTime);
             return dbMessage;
         }

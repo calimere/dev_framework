@@ -150,7 +150,7 @@ namespace dev_framework.Manager
         /// <param name="ex">The exception.</param>
         /// <param name="id">The ID.</param>
         /// <returns>The database message.</returns>
-        public void ErrorById(string methodName, Exception ex, int id, bool throwEx = false)
+        public void ErrorById(string methodName, Exception ex, int id, bool throwEx = true)
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Error]");
@@ -164,7 +164,7 @@ namespace dev_framework.Manager
             if (throwEx)
                 throw ex;
         }
-        public void Error(string methodName, Exception ex, bool throwEx = false)
+        public void Error(string methodName, Exception ex, bool throwEx = true)
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Error]");
@@ -197,7 +197,7 @@ namespace dev_framework.Manager
         /// <param name="ex">The exception.</param>
         /// <param name="currentObj">The current object.</param>
         /// <returns>The database message.</returns>
-        public void Error<T>(string methodName, Exception ex, T currentObj, bool throwEx = false) where T : class
+        public void Error<T>(string methodName, Exception ex, T currentObj, bool throwEx = true) where T : class
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Error]");
@@ -225,7 +225,7 @@ namespace dev_framework.Manager
         /// <param name="ex">The exception.</param>
         /// <param name="currentObj">The current objects.</param>
         /// <returns>The database message.</returns>
-        public void Error<T>(string methodName, Exception ex, IEnumerable<T>? currentObj = null, bool throwEx = false) where T : class
+        public void Error<T>(string methodName, Exception ex, IEnumerable<T>? currentObj = null, bool throwEx = true) where T : class
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Error]");

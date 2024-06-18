@@ -19,16 +19,15 @@ namespace dev_framework.Database.Repository
         public BusinessGenericRepository(W context, SerilogManager logger) : base(context, logger)
         {
         }
-        public IEnumerable<T> GetAll(bool withDeleted = false)
+
+        public override IEnumerable<T> GetAll()
         {
-            var methodName= SerilogManager.GetCurrentMethod();
+            var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName);
             IEnumerable<T> entities = null;
             try
             {
-                entities = withDeleted
-                  ? _dbContext.Set<T>().AsEnumerable()
-                  : _dbContext.Set<T>().Where(m => !m.is_deleted).AsEnumerable();
+                entities = _dbContext.Set<T>().Where(m => !m.is_deleted).AsEnumerable();
             }
             catch (Exception ex) { _logger.Error(methodName, ex); }
             _logger.Fin(methodName, entities, startTime);

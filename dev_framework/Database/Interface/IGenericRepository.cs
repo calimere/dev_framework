@@ -14,7 +14,8 @@ namespace dev_framework.Database
         Task<T> GetItemAsync(int id);
         Task<T> GetItemAsync(string id);
 
-        Task<IEnumerable<T>> GetAll();
+        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
         DatabaseMessage Remove(T entity);
         DatabaseMessage Remove(T[] entities);
         IEnumerable<T> GetItems(int[] ids, string key);
