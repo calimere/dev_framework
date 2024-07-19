@@ -8,7 +8,7 @@ namespace System.Linq
 {
     public static class LinqExtension
     {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey> (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new HashSet<TKey>();
             foreach (TSource element in source)
@@ -29,6 +29,14 @@ namespace System.Linq
         {
             if (condition)
                 return source.Where(predicate);
+            else
+                return source;
+        }
+
+        public static IEnumerable<TSource> TakeIf<TSource>(this IEnumerable<TSource> source, int count)
+        {
+            if (count > 0)
+                return source.Take(count);
             else
                 return source;
         }

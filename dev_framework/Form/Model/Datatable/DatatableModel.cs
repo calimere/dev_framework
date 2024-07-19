@@ -23,5 +23,10 @@ namespace dev_framework.Form.Model.Datatable
             Start = start;
             Length = length;
         }
+        public DatatableViewModel()
+        {
+            Start = 0;
+            Length = 10;
+        }
     }
 }

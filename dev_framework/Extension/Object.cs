@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -68,6 +69,11 @@ namespace System
             DateTime monday = d.AddDays(7 -delta);
             return monday;
         }
+        public static SelectListItem[] ToSelectListItems<T>(this IEnumerable<T> obj, string value, string text)
+        {
+            return obj.Select(m => new SelectListItem { Text = m.GetType().GetProperty(text).GetValue(m).ToString(), Value = m.GetType().GetProperty(value).GetValue(m).ToString() }).ToArray();
+        }
+        
 
         public class WeekPeriod
         {

@@ -9,5 +9,6 @@ namespace dev_framework.Database.Interface
     {
         DatabaseMessage DeleteItem(int id);
         DatabaseMessage DeleteItems(int[] ids, string key);
+        int GetTotal();
     }
 }

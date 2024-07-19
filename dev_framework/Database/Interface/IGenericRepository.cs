@@ -20,5 +20,7 @@ namespace dev_framework.Database
         DatabaseMessage Remove(T[] entities);
         IEnumerable<T> GetItems(int[] ids, string key);
         IEnumerable<T> GetItems(string[] ids, string key);
+
+        int GetTotal();
     }
 }

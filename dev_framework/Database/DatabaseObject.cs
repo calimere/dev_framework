@@ -12,7 +12,7 @@ namespace dev_framework.Database
         }
     }
 
-    public class SupervisedDatabaseObject : DatabaseObject
+    public class SupervisedDatabaseObject : BusinessObject
     {
         public DateTime modified { get; set; }
         public string modified_by { get; set; }
@@ -21,11 +21,14 @@ namespace dev_framework.Database
         {
             modified = DateTime.Now;
         }
-}
+    }
 
     public abstract class BusinessObject : DatabaseObject
     {
         public bool is_deleted { get; set; }
-        public BusinessObject() { is_deleted = false; }
+        public BusinessObject()
+        {
+            is_deleted = false;
+        }
     }
 }

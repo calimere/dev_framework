@@ -21,6 +21,8 @@ namespace dev_framework.Database.Repository
             _logger = logger;
         }
 
+        public virtual int GetTotal() { return _dbContext.Set<T>().Count(); }
+
         /// <summary>
         /// Adds a new entity to the database.
         /// </summary>
@@ -82,7 +84,7 @@ namespace dev_framework.Database.Repository
         /// <param name="methodName">The name of the calling method.</param>
         /// <param name="entity">The entity to be updated.</param>
         /// <returns>A DatabaseMessage indicating the result of the operation.</returns>
-        public DatabaseMessage Update(T entity)
+        public virtual DatabaseMessage Update(T entity)
         {
             var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName, entity);
@@ -170,7 +172,7 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entities, startTime);
             return entities;
         }
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             var methodName = SerilogManager.GetCurrentMethod();
             var startTime = _logger.Debut(methodName);

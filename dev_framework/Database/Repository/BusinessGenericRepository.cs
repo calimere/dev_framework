@@ -33,6 +33,22 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entities, startTime);
             return entities;
         }
+        public override async Task<IEnumerable<T>> GetAllAsync()
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try
+            {
+                entities = await _dbContext.Set<T>().Where(m => !m.is_deleted).ToArrayAsync();
+            }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
+
+        public override int GetTotal() { return _dbContext.Set<T>().Where(m => !m.is_deleted).Count(); }
+
         public DatabaseMessage DeleteItem(int id)
         {
             var methodName = SerilogManager.GetCurrentMethod();
