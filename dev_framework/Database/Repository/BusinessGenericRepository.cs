@@ -33,6 +33,32 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entities, startTime);
             return entities;
         }
+        public override IEnumerable<T> GetAllAsc(int length)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try
+            {
+                entities = _dbContext.Set<T>().Where(m => !m.is_deleted).Take(length).AsEnumerable();
+            }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
+        public override IEnumerable<T> GetAllDesc(int length)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try
+            {
+                entities = _dbContext.Set<T>().Where(m => !m.is_deleted).OrderByDescending(m => m.created).Take(length).AsEnumerable();
+            }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
         public override async Task<IEnumerable<T>> GetAllAsync()
         {
             var methodName = SerilogManager.GetCurrentMethod();
@@ -48,7 +74,6 @@ namespace dev_framework.Database.Repository
         }
 
         public override int GetTotal() { return _dbContext.Set<T>().Where(m => !m.is_deleted).Count(); }
-
         public DatabaseMessage DeleteItem(int id)
         {
             var methodName = SerilogManager.GetCurrentMethod();

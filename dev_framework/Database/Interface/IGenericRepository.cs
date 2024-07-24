@@ -15,12 +15,13 @@ namespace dev_framework.Database
         Task<T> GetItemAsync(string id);
 
         IEnumerable<T> GetAll();
+        IEnumerable<T> GetAllAsc(int length);
+        IEnumerable<T> GetAllDesc(int length);
         Task<IEnumerable<T>> GetAllAsync();
         DatabaseMessage Remove(T entity);
         DatabaseMessage Remove(T[] entities);
         IEnumerable<T> GetItems(int[] ids, string key);
         IEnumerable<T> GetItems(string[] ids, string key);
-
         int GetTotal();
     }
 }

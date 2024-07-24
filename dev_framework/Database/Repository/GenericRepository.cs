@@ -1,4 +1,4 @@
-﻿using dev_framework.Form.Model.Datatable;
+﻿ using dev_framework.Form.Model.Datatable;
 using dev_framework.Manager;
 using dev_framework.Message.Model;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace dev_framework.Database.Repository
 {
-    public abstract class GenericRepository<W, T> : IGenericRepository<W, T> where W : DbContext where T : class
+    public abstract class GenericRepository<W, T> : IGenericRepository<W, T> where W : DbContext where T : DatabaseObject
     {
         protected W _dbContext;
         protected SerilogManager _logger;
@@ -168,6 +168,32 @@ namespace dev_framework.Database.Repository
             var startTime = _logger.Debut(methodName);
             IEnumerable<T> entities = null;
             try { entities = _dbContext.Set<T>().ToArray(); }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
+        public virtual IEnumerable<T> GetAllAsc(int length)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try
+            {
+                entities = _dbContext.Set<T>().Take(length).AsEnumerable();
+            }
+            catch (Exception ex) { _logger.Error(methodName, ex); }
+            _logger.Fin(methodName, entities, startTime);
+            return entities;
+        }
+        public virtual IEnumerable<T> GetAllDesc(int length)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName);
+            IEnumerable<T> entities = null;
+            try
+            {
+                entities = _dbContext.Set<T>().OrderByDescending(m => m.created).Take(length).AsEnumerable();
+            }
             catch (Exception ex) { _logger.Error(methodName, ex); }
             _logger.Fin(methodName, entities, startTime);
             return entities;
