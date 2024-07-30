@@ -16,7 +16,6 @@ namespace dev_framework.Database
 
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAllAsc(int length);
-        IEnumerable<T> GetAllDesc(int length);
         Task<IEnumerable<T>> GetAllAsync();
         DatabaseMessage Remove(T entity);
         DatabaseMessage Remove(T[] entities);

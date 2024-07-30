@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace dev_framework.Database.Repository
 {
-    public abstract class BusinessGenericRepository<W, T> : GenericRepository<W, T>, IBusinessGenericRepository<W, T> where W : DbContext where T : BusinessObject
+    public abstract class BusinessGenericRepository<W, T> : DatabaseObjectRepository<W, T>, IBusinessGenericRepository<W, T> where W : DbContext where T : BusinessObject
     {
         public BusinessGenericRepository(W context, SerilogManager logger) : base(context, logger)
         {
