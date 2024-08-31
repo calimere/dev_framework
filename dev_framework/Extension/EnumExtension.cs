@@ -148,6 +148,17 @@ namespace System
                 Selected = m.ToString() == value
             });
         }
+        public static IEnumerable<SelectListItem> ToIEnumerableSelectListItems<T>(string value, string[] excluded)
+        {
+            return Enum.GetValues(typeof(T)).Cast<Enum>().Select(m => new SelectListItem
+            {
+                Text = m.ToDescription(),
+                Value = m.ToString(),
+                Selected = m.ToString() == value,
+                Disabled = excluded.Contains(m.ToString())
+            });
+        }
+
         public static IEnumerable<SelectListItem> ToIEnumerableSelectListItemsByDefaultValue<T>()
         {
             return Enum.GetValues(typeof(T)).Cast<Enum>().Select(m => new SelectListItem
