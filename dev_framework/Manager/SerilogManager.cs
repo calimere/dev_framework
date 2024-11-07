@@ -134,7 +134,7 @@ namespace dev_framework.Manager
 
             GetLogger().Information(log.ToString());
         }
-        public void Fin<T>(string methodName, DateTime debut) where T : class
+        public void Fin(string methodName, DateTime debut)
         {
             StringBuilder log = new StringBuilder();
             log.Append("[Fin]");
