@@ -1,13 +1,6 @@
-﻿using dev_framework.Extension.Model;
-using dev_framework.Form.Model.Html;
+﻿using dev_framework.Form.Model.Html;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
-using System;
-using System.Linq.Expressions;
-using System.Text;
 using System.Text.Encodings.Web;
 
 public static class HtmlHelperExtension
@@ -73,90 +66,5 @@ public static class HtmlHelperExtension
         }
         return new HtmlString("");
     }
-    public static IHtmlContent TabNavBar(this IHtmlHelper htmlHelper, TabNavBarViewModel navBarViewModel)
-    {
-        var html = new StringBuilder();
-        html.Append("<nav class=\"nav\">")
-            .Append("<div class=\"\"")
-            .Append($" id=\"{navBarViewModel.NavBarId}\" role=\"tablist\">")
-            .Append($"<ul class=\"nav {(navBarViewModel.CssClass != null ? string.Join(" ", navBarViewModel.CssClass) : "")}\">");
-
-        foreach (var item in navBarViewModel.TabNavBarModels)
-        {
-            var cssClass = item.CssClass != null ? string.Join(" ", item.CssClass) : "";
-            var isActive = item.IsActive ? "active" : "";
-            var dataAttribute = string.Join(" ", item.DataAttribute.Select(x => $"data-{x.Key}=\"{x.Value}\""));
-            var icon = item.IconClass != null ? string.Join(" ", item.IconClass) : "";
-
-            html.Append("<li class=\"nav-item\">")
-                .Append("<button class=\"nav-link ")
-                .Append($"{cssClass} {isActive}\" type=\"button\" data-bs-toggle=\"tab\"")
-                .Append($" data-bs-target=\"#{item.ContentId}\" role=\"tab\"")
-                .Append($" aria-controls=\"{item.ContentId}\" id=\"{item.TabNavbarId}\"")
-                .Append($" aria-selected=\"true\" {dataAttribute}>")
-                .Append($"<i class=\"{icon} me-2\"></i>")
-                .Append($"{item.Title}")
-                .Append("</button>")
-                .Append("</li>");
-        }
-
-        html.Append("</ul></div></nav>");
-
-        return new HtmlString(html.ToString());
-    }
-    public static IHtmlContent TabContent(
-        this IHtmlHelper htmlHelper,
-        TabContentViewModel tabContentViewModel)
-    {
-        // Utilisation de StringBuilder pour une meilleure performance
-        var sb = new StringBuilder();
-
-        // Conteneur principal des tabs
-        sb.Append($"<div class=\"tab-content {string.Join(" ", tabContentViewModel.CssClass)}\" id=\"{tabContentViewModel.ContentId}\">");
-
-        // Ajout de chaque tab contenu
-        foreach (var item in tabContentViewModel.TabContentModels)
-        {
-            // Crée un tag div pour chaque tab-pane
-            var tabPane = new TagBuilder("div");
-            tabPane.AddCssClass("tab-pane fade");
-
-            if (item.IsActive)
-                tabPane.AddCssClass("show active");
-
-            tabPane.Attributes["id"] = item.ContentId;
-            tabPane.Attributes["role"] = "tabpanel";
-            tabPane.Attributes["aria-labelledby"] = item.TabNavbarId;
-
-            // Ajout des data-attributes
-            foreach (var dataAttr in item.DataAttribute)
-            {
-                tabPane.MergeAttribute($"data-{dataAttr.Key}", dataAttr.Value);
-            }
-
-            if (!string.IsNullOrEmpty(item.View))
-            {
-                // Ajout du contenu de la vue partielle
-                var partialViewContent = htmlHelper.PartialAsync(item.View, item.Model).Result;
-                tabPane.InnerHtml.AppendHtml(partialViewContent);
-            }
-
-
-            // Conversion en HTML
-            using (var writer = new StringWriter())
-            {
-                tabPane.WriteTo(writer, HtmlEncoder.Default);
-                sb.Append(writer.ToString());
-            }
-        }
-
-        // Fermeture du conteneur principal
-        sb.Append("</div>");
-
-        return new HtmlString(sb.ToString());
-    }
-    private static string GetFromDic(Dictionary<string, string> dic)
-    {
-        return string.Join(" ", dic.Select(x => $"data-{x.Key}=\"{x.Value}\""));
-    }
+    
 }
