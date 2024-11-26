@@ -8,9 +8,34 @@ namespace dev_framework.Components.Model.Card
 {
     public class CardViewModel : ViewModel
     {
+        public string Id { get; set; }
+        public string Title { get; set; }
+
         public CardHeaderModel Header { get; set; }
         public CardBodyModel Body { get; set; }
 
+        public CardViewModel()
+        {
+            Id = Guid.NewGuid().ToString().Substring(0, 8);
+            Title = Id;
+            Header = new CardHeaderModel() { Id = Id, Title = Title };
+            Body = new CardBodyModel() { Id = Id, Title = Title };
+        }
+        public CardViewModel(string id, string title, bool isCollapsed = false) : base()
+        {
+            Id = id;
+            Title = title;
+            Header = new CardHeaderModel() { Id = Id, Title = Title };
+            Body = new CardBodyModel() { Id = Id, Title = Title };
+        }
+
+        public CardViewModel(string id, string title, string view, object model = null, bool isCollapsed = false) : base()
+        {
+            Id = id;
+            Title = title;
+            Header = new CardHeaderModel() { Id = Id, Title = Title, };
+            Body = new CardBodyModel() { Id = Id, Title = Title, View = view, Model = model };
+        }
     }
 
     public abstract class CardModel : Model

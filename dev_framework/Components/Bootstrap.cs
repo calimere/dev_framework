@@ -4,14 +4,16 @@ using dev_framework.Components.Model.Tabs.Nav;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Primitives;
+using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
 
 namespace dev_framework.Components
 {
-    public static class BootstrapHelper
+    public static class BootstrapExtensions
     {
-        public static IHtmlContent TabNavBar(this IHtmlHelper htmlHelper, TabNavBarViewModel navBarViewModel)
+
+        public static IHtmlContent BootstrapTabNavBar(this IHtmlHelper htmlHelper, TabNavBarViewModel navBarViewModel)
         {
             var html = new StringBuilder();
             html.Append("<nav class=\"nav\">")
@@ -42,7 +44,7 @@ namespace dev_framework.Components
 
             return new HtmlString(html.ToString());
         }
-        public static IHtmlContent TabContent(
+        public static IHtmlContent BootstrapTabContent(
             this IHtmlHelper htmlHelper,
             TabContentViewModel tabContentViewModel)
         {
@@ -99,32 +101,89 @@ namespace dev_framework.Components
 
             return new HtmlString(sb.ToString());
         }
-        private static string GetFromDic(Dictionary<string, string> dic)
+        public static Card BootstrapCard(this IHtmlHelper htmlHelper, CardViewModel cardViewModel)
         {
-            return string.Join(" ", dic.Select(x => $"data-{x.Key}=\"{x.Value}\""));
+            return new Card(htmlHelper, cardViewModel);
         }
+    }
 
-        public static IHtmlContent Card(this IHtmlHelper htmlHelper, CardViewModel cardViewModel)
+    public class Card : IDisposable
+    {
+        private readonly TextWriter _writer;
+
+        public Card() { }
+        public Card(IHtmlHelper htmlHelper, CardViewModel cardViewModel)
         {
+            _writer = htmlHelper.ViewContext.Writer;
+
             string cssClass = "";
             if (cardViewModel.CssClass != null)
                 cssClass = string.Join(" ", cardViewModel.CssClass);
 
-            var sb = new StringBuilder($"<div class=\"card {string.Join(" ", cssClass)}\" id=\"{cardViewModel.Id}\">");
-            sb.Append(CardHeader(htmlHelper, cardViewModel.Header));
-            sb.Append(CardBody(htmlHelper, cardViewModel.Body));
-            sb.Append("</div>");
-            return new HtmlString(sb.ToString());
+            _writer.Write($"<div class=\"card {string.Join(" ", cssClass)}\" id=\"{cardViewModel.Id}\">");
+            new CardHeader(htmlHelper, cardViewModel.Header);
+            new CardBody(htmlHelper, cardViewModel.Body);
         }
-        public static IHtmlContent CardBody(this IHtmlHelper htmlHelper, CardBodyModel cardModel)
+
+        public void Dispose()
         {
+            _writer.Write("</div>");
+            _writer.Write("</div>");
+            _writer.Write("</div>");
+        }
+    }
+
+    public class CardHeader : IDisposable
+    {
+        private readonly TextWriter _writer;
+        public CardHeader() { }
+        public void Dispose() { }
+
+        public CardHeader(IHtmlHelper htmlHelper, CardHeaderModel cardModel)
+        {
+            if (cardModel != null)
+            {
+                _writer = htmlHelper.ViewContext.Writer;
+
+                var cssClass = "";
+                if (cardModel.CssClass != null)
+                    cssClass = string.Join(" ", cardModel.CssClass);
+
+                var html = new StringBuilder();
+                html.Append($"<div class=\"card-header {cssClass} {(cardModel.IsCollapsed != null && cardModel.IsCollapsed.Value ? "collapsed" : "")}\" id=\"{cardModel.HeaderId}\"")
+                    .Append(cardModel.IsCollapsable ? $"data-bs-toggle=\"collapse\" data-bs-target=\"#{cardModel.BodyId}\" aria-expanded=\"false\" aria-controls=\"#{cardModel.BodyId}\"" : "")
+                    .Append(">")
+                    .Append($"<h5 class=\"card-title\">");
+
+                if (cardModel.Icons != null)
+                    html.Append($"<i class=\"{string.Join(" ", cardModel.Icons)}\"></i>");
+
+                html.Append($" {cardModel.Title}")
+                .Append("</h5>")
+                .Append("</div>");
+
+                _writer.Write(html.ToString());
+            }
+
+        }
+    }
+
+    public class CardBody : IDisposable
+    {
+        private readonly TextWriter _writer;
+        public CardBody() { }
+        public CardBody(IHtmlHelper htmlHelper, CardBodyModel cardModel)
+        {
+            _writer = htmlHelper.ViewContext.Writer;
+
             string cssClass = "";
             if (cardModel.CssClass != null)
                 cssClass = string.Join(" ", cardModel.CssClass);
 
-            var sb = new StringBuilder($"<div id=\"{cardModel.BodyId}\" class=\"collapse {(cardModel.IsCollapsed.HasValue && cardModel.IsCollapsed.Value ? "" : "show")} {cssClass}\">")
+            var sb = new StringBuilder($"<div id=\"{cardModel.BodyId}\" class=\"{(cardModel.IsCollapsed.HasValue && cardModel.IsCollapsed.Value ? "collapse" : "collapse show")} {cssClass}\">")
                 .Append($"<div class=\"card-body\">");
 
+            
             if (!string.IsNullOrEmpty(cardModel.View))
             {
                 using (var writer = new System.IO.StringWriter())
@@ -132,34 +191,10 @@ namespace dev_framework.Components
                     htmlHelper.Partial(cardModel.View, cardModel.Model).WriteTo(writer, HtmlEncoder.Default);
                     sb.Append(writer.ToString());
                 }
-
             }
-            sb.Append("</div>").Append("</div>");
-            return new HtmlString(sb.ToString());
+            _writer.Write(new HtmlString(sb.ToString()));
         }
-        public static IHtmlContent CardHeader(this IHtmlHelper htmlHelper, CardHeaderModel cardModel)
-        {
-            if (cardModel == null)
-                return new HtmlString("");
-
-            var cssClass = "";
-            if (cardModel.CssClass != null)
-                cssClass = string.Join(" ", cardModel.CssClass);
-
-            var html = new StringBuilder();
-            html.Append($"<div class=\"card-header {cssClass} {(cardModel.IsCollapsed != null && cardModel.IsCollapsed.Value ? "collapsed" : "")}\" id=\"{cardModel.HeaderId}\"")
-                .Append(cardModel.IsCollapsable ? $"data-bs-toggle=\"collapse\" data-bs-target=\"#{cardModel.BodyId}\" aria-expanded=\"false\" aria-controls=\"#{cardModel.BodyId}\"" : "")
-                .Append(">")
-                .Append($"<h5 class=\"card-title\">");
-
-            if (cardModel.Icons != null)
-                html.Append($"<i class=\"{string.Join(" ", cardModel.Icons)}\"></i>");
-
-            html.Append($" {cardModel.Title}")
-            .Append("</h5>")
-            .Append("</div>");
-
-            return new HtmlString(html.ToString());
+        public void Dispose() {
         }
     }
 }

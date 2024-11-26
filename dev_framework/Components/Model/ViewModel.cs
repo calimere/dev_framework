@@ -11,5 +11,10 @@ namespace dev_framework.Components.Model
         public string Id { get; set; }
 
         public string[] CssClass { get; set; }
+
+        public ViewModel()
+        {
+            Id = Guid.NewGuid().ToString().Substring(0, 8);
+        }
     }
 }
