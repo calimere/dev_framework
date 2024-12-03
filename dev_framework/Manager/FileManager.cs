@@ -1,4 +1,5 @@
-﻿using DinkToPdf;
+﻿using dev_framework.Message.Model;
+using DinkToPdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -21,7 +22,7 @@ namespace dev_framework.Manager
             _serilogManager = serilogManager;
         }
 
-        public bool GeneratePDF(string url, string filePath, string footer)
+        public IOMessage GeneratePDF(string url, string filePath, string footer)
         {
             var responseData = string.Empty;
             try
@@ -58,17 +59,17 @@ namespace dev_framework.Manager
                             };
 
                             _converter.Convert(doc);
-                            return true;
+                            return new IOMessage(EIOMessage.Success) { ReturnValue = new { FilePath = filePath } };
                         }
                         catch (Exception ex)
                         {
                             _serilogManager.Error("Erreur durant la génération du pdf", ex);
-                            return false;
+                            return new IOMessage(EIOMessage.Error) { Exception = ex };
                         }
                     }
                 }
             }
-            catch { return false; }
+            catch (Exception ex) { return new IOMessage(EIOMessage.Error) { Exception = ex }; }
         }
     }
 }

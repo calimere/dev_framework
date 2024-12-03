@@ -105,8 +105,13 @@ namespace dev_framework.Components
         {
             return new Card(htmlHelper, cardViewModel);
         }
-    }
 
+        public static Card BootstrapCard(this IHtmlHelper htmlHelper, string id, string[] cssClasses, string title)
+        {
+            return new Card(htmlHelper, id, cssClasses, title);
+        }
+
+    }
     public class Card : IDisposable
     {
         private readonly TextWriter _writer;
@@ -124,6 +129,18 @@ namespace dev_framework.Components
             new CardHeader(htmlHelper, cardViewModel.Header);
             new CardBody(htmlHelper, cardViewModel.Body);
         }
+        public Card(IHtmlHelper htmlHelper, string id, string[] cssClasses, string title)
+        {
+            _writer = htmlHelper.ViewContext.Writer;
+
+            string cssClass = "";
+            if (cssClasses != null)
+                cssClass = string.Join(" ", cssClasses);
+
+            _writer.Write($"<div class=\"card {string.Join(" ", cssClass)}\" id=\"{id}\">");
+            new CardHeader(htmlHelper, new CardHeaderModel() { Id = id, Title = title });
+            new CardBody(htmlHelper, new CardBodyModel() { Id = id });
+        }
 
         public void Dispose()
         {
@@ -132,13 +149,11 @@ namespace dev_framework.Components
             _writer.Write("</div>");
         }
     }
-
     public class CardHeader : IDisposable
     {
         private readonly TextWriter _writer;
         public CardHeader() { }
         public void Dispose() { }
-
         public CardHeader(IHtmlHelper htmlHelper, CardHeaderModel cardModel)
         {
             if (cardModel != null)
@@ -167,7 +182,6 @@ namespace dev_framework.Components
 
         }
     }
-
     public class CardBody : IDisposable
     {
         private readonly TextWriter _writer;
@@ -183,7 +197,7 @@ namespace dev_framework.Components
             var sb = new StringBuilder($"<div id=\"{cardModel.BodyId}\" class=\"{(cardModel.IsCollapsed.HasValue && cardModel.IsCollapsed.Value ? "collapse" : "collapse show")} {cssClass}\">")
                 .Append($"<div class=\"card-body\">");
 
-            
+
             if (!string.IsNullOrEmpty(cardModel.View))
             {
                 using (var writer = new System.IO.StringWriter())
@@ -194,7 +208,8 @@ namespace dev_framework.Components
             }
             _writer.Write(new HtmlString(sb.ToString()));
         }
-        public void Dispose() {
+        public void Dispose()
+        {
         }
     }
 }

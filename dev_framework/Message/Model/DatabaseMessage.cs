@@ -21,7 +21,6 @@
             EnumDataBaseMessage = enumDataBaseMessage;
             Exception = ex;
         }
-
     }
 
     public class IOMessage : Message
