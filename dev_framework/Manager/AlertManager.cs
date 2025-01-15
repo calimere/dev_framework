@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace dev_framework.Manager
 {
-    public class NotificationManager : Singleton<NotificationManager>
+    public class AlertManager : Singleton<AlertManager>
     {
-        public NotificationManager() { }
+        public AlertManager() { }
 
         public async Task PublishDiscordWebHook(Exception? ex, object obj, string url)
         {

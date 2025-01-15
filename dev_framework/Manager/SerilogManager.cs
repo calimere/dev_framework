@@ -159,7 +159,7 @@ namespace dev_framework.Manager
             GetLogger().Error(log.ToString());
 
             if (!string.IsNullOrEmpty(_discordUrl))
-                NotificationManager.Current.PublishDiscordWebHook(ex, id, _discordUrl);
+                AlertManager.Current.PublishDiscordWebHook(ex, id, _discordUrl);
 
             if (throwEx)
                 throw ex;
@@ -172,7 +172,7 @@ namespace dev_framework.Manager
             GetLogger().Error(log.ToString());
 
             if (!string.IsNullOrEmpty(_discordUrl))
-                NotificationManager.Current.PublishDiscordWebHook(ex, null, _discordUrl);
+                AlertManager.Current.PublishDiscordWebHook(ex, null, _discordUrl);
 
             if (throwEx)
                 throw ex;
@@ -211,7 +211,7 @@ namespace dev_framework.Manager
             GetLogger().Error(log.ToString());
 
             if (!string.IsNullOrEmpty(_discordUrl))
-                NotificationManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
+                AlertManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
 
             if (throwEx)
                 throw ex;
@@ -239,7 +239,7 @@ namespace dev_framework.Manager
             GetLogger().Error(log.ToString());
 
             if (!string.IsNullOrEmpty(_discordUrl))
-                NotificationManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
+                AlertManager.Current.PublishDiscordWebHook(ex, currentObj, _discordUrl);
 
             if (throwEx)
                 throw ex;
