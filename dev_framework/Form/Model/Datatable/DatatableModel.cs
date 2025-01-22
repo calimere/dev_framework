@@ -16,12 +16,21 @@ namespace dev_framework.Form.Model.Datatable
     }
     public class DatatableViewModel
     {
+        public string Columns { get; set; }
+        public string Order { get; set; }
         public int Start { get; set; }
         public int Length { get; set; }
         public DatatableViewModel(int start, int length)
         {
             Start = start;
             Length = length;
+        }
+        public DatatableViewModel(int start, int length, string columns, string order)
+        {
+            Start = start;
+            Length = length;
+            Columns = columns;
+            Order = order;
         }
         public DatatableViewModel()
         {

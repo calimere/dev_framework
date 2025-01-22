@@ -26,4 +26,12 @@ namespace dev_framework.Form.Model.Datatable
         public int column { get; set; }
         public string dir { get; set; }
     }
+
+    public class DatatableFilter
+    {
+        public int Length { get; set; }
+        public int Start { get; set; }
+        public string OrderBy { get; set; }
+        public string OrderDir { get; set; }
+    }
 }
