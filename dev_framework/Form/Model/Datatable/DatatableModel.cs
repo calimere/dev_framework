@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,8 @@ namespace dev_framework.Form.Model.Datatable
     }
     public class DatatableViewModel
     {
-        public string Columns { get; set; }
-        public string Order { get; set; }
+        public DataTableColumn[] Columns { get; set; }
+        public DatatableOrder[] Order { get; set; }
         public int Start { get; set; }
         public int Length { get; set; }
         public DatatableViewModel(int start, int length)
@@ -29,8 +30,12 @@ namespace dev_framework.Form.Model.Datatable
         {
             Start = start;
             Length = length;
-            Columns = columns;
-            Order = order;
+
+            try { Columns = JsonConvert.DeserializeObject<DataTableColumn[]>(columns).Where(m=>!string.IsNullOrEmpty(m.name)).ToArray() ?? new DataTableColumn[0]; }
+            catch (Exception) { Columns = new DataTableColumn[0]; }
+
+            try { Order = JsonConvert.DeserializeObject<DatatableOrder[]>(order) ?? new DatatableOrder[0]; }
+            catch (Exception) { Order = new DatatableOrder[0]; }
         }
         public DatatableViewModel()
         {

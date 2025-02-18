@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -148,6 +149,16 @@ namespace System
                 Selected = m.ToString() == value
             });
         }
+        public static IEnumerable<SelectListItem> ToIEnumerableSelectListItems<T>(int? value)
+        {
+            return Enum.GetValues(typeof(T)).Cast<Enum>().Select(m => new SelectListItem
+            {
+                Text = m.ToDescription(),
+                Value = Convert.ToInt32(m).ToString(),
+                Selected = value.HasValue ? Convert.ToInt32(m) == value : false
+            });
+        }
+
         public static IEnumerable<SelectListItem> ToIEnumerableSelectListItems<T>(string value, string[] excluded)
         {
             return Enum.GetValues(typeof(T)).Cast<Enum>().Select(m => new SelectListItem

@@ -1,4 +1,4 @@
-﻿using dev_framework.Components.Model.Datatble;
+﻿using dev_framework.Form.Model.Datatable;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -12,67 +12,98 @@ namespace dev_framework.Components
 {
     public static class DatatableExtensions
     {
-        private static string RenderColumn(Column column)
+        private static string RenderColumn(DataTableColumn column)
         {
             switch (column.ETypeColumn)
             {
                 case ETypeColumn.Normal:
-                    return $@"retour.push({{ ""data"": ""{column.Data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()} }});";
+                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, title:'{column.Title}', orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()} }});";
                 case ETypeColumn.Link:
-                    return $@"retour.push({{ ""data"": ""{column.Data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()} }});";
+                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}}});";
                 case ETypeColumn.Custom:
-                    return $@"retour.push({{""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()}, render: function (d, t, r) {{
+                    return $@"retour.push({{""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: function (d, t, r) {{
                         return '{column.Render}';
                         }} }});";
             }
             return "";
         }
-        private static string RenderColumns(Column[] columns, string id, string deleteUrl, string editUrl)
+        private static string RenderColumns(DataTableColumn[] columns, string id, string deleteUrl, string editUrl)
         {
             var sb = new StringBuilder($@"function get{id}Columns() {{ 
                 var retour = new Array();");
 
-            var key = "";
+            var key = "id";
             foreach (var column in columns)
             {
                 if (column.IsKey)
-                    key = column.Data;
-                sb.Append(RenderColumn(column));
+                    key = column.data;
+                sb.AppendLine(RenderColumn(column));
             }
 
-            sb.Append($@"retour.push({{
-                            ""autoWidth"": false, orderable: false, render: function (d, t, r) {{
-                                return '<button data-url=""{editUrl}?id=' + r.{key} + '"" class=""btn btn-primary me-2 btn-edit"" data-content=""edit-{id}-container""><i class=""bx bx-edit""></i></button>' +
-                                    '<a href=""{deleteUrl}?id=' + r.{key} + '"" class=""btn btn-danger btn-delete""><i class=""bx bx-trash""></i></a>';
+            var delete = !string.IsNullOrEmpty(deleteUrl)
+                ? $"<a href=\"{deleteUrl}?id=' + r.{key} + '\" class=\"btn btn-danger btn-delete\"><i class=\"bx bx-trash\"></i></a>"
+                : "";
+
+            sb.AppendLine($@"retour.push({{
+                            ""autoWidth"": false, orderable: false, searchable:false, render: function (d, t, r) {{
+                                return '<a href=""{editUrl}?id=' + r.{key} + '"" class=""btn btn-primary me-2 btn-edit"" data-content=""edit-{id}-container""><i class=""bx bx-edit""></i></a>' + '{delete}';
                             }}
                         }}); return retour; }}");
 
             return sb.ToString();
         }
-        public static IHtmlContent DataTable(this IHtmlHelper htmlHelper, string id, string[] containerCssClass, int length, int start, string loadUrl, string[] columnsName, bool hasActionColumn = true)
+        public static IHtmlContent DataTable(this IHtmlHelper htmlHelper, string id, string[] containerCssClass, int length, int start, string loadUrl, DataTableColumn[] columnsName, bool hasActionColumn = true)
         {
             var html = new StringBuilder();
             var str = new StringBuilder();
+            var searchInputs = new StringBuilder();
 
             foreach (var item in columnsName)
             {
-                str.Append($@"<th>{item}</th>");
+                str.AppendLine($@"<th>{item.Title}</th>");
+
+                if (item.searchable)
+                {
+                    if (item.Options != null && item.Options.Any())
+                    {
+                        searchInputs.AppendLine("<th>");
+                        searchInputs.AppendLine("<select class=\"form-control\">");
+                        searchInputs.AppendLine("<option value=\"\">Sélectionner</option>");
+                        foreach (var option in item.Options)
+                        {
+                            searchInputs.AppendLine($"<option value=\"{option.Value}\" {(option.Selected ? "selected" : "")}>{option.Text}</option>");
+                        }
+                        searchInputs.AppendLine("</select>");
+                        searchInputs.AppendLine("</th>");
+                    }
+                    else
+                        searchInputs.AppendLine($"<th><input type=\"text\" placeholder=\"\" class=\"form-control\" value=\"{item.search.value}\" /></th>");
+                }
+                else
+                    searchInputs.AppendLine("<th></th>");
             }
+
             if (hasActionColumn)
-                str.Append($@"<th></th>");
+            {
+                searchInputs.AppendLine($@"<th></th>");
+                str.AppendLine($@"<th></th>");
+            }
 
-
-            html.Append($@"<div id=""{id}-list"" class=""{(containerCssClass != null ? string.Join(" ", containerCssClass) : "")}"" >
+            html.AppendLine($@"<div id=""{id}-list"" class=""{(containerCssClass != null ? string.Join(" ", containerCssClass) : "")}"" >
                                 <div class=""row"">
                                     <div class=""col-md-12"">
-                                        <div id=""{id}-filters"">
+                                        <div id=""{id}-filters"" class=""dNone"">
                                             <input type=""hidden"" id=""hf-{id}-length"" value=""{length}"" />
                                             <input type=""hidden"" id=""hf-{id}-start"" value=""{start}""/>
                                         </div>
                                         <table class=""table"" id=""{id}-table"" data-url=""{loadUrl}"">
-                                            <thead><tr>
-                                                {str}
-                                            </tr></thead>
+                                            <thead>
+                                                <tr>{searchInputs}</tr>
+                                                <tr>
+                                                    {str}
+                                                </tr>
+                                            </thead>
+                                            <tfoot><tr>{searchInputs}</tr></tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -81,43 +112,46 @@ namespace dev_framework.Components
             return new HtmlString(html.ToString());
         }
 
-        public static IHtmlContent RenderJS(this IHtmlHelper htmlHelper, string id, Column[] columns, string confirmDeletePhrase, string deleteUrl, string editUrl)
+        public static IHtmlContent RenderJS(this IHtmlHelper htmlHelper, string id, DataTableColumn[] columns, string confirmDeletePhrase, string deleteUrl, string editUrl)
         {
             var html = new StringBuilder();
-            html.Append($@"<script type=""text/javascript"">
-                            (function (d, $, undefined) {{
-                            ""use strict"";
-                            var {id}Table = (function () {{
-                                var self = {{}};
-                                var $container;
-                                self.init = function (container) {{
-                                    $container = container;
-                                    datatableExtension.init($container, '#hf-{id}-start', '#hf-{id}-length');
-                                    datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname, false);
-                                    bindEvents();
-                                }};
+            html.AppendLine($@"
+<script type=""text/javascript"">
+    (function (d, $, undefined) {{
+    ""use strict"";
+    var {id}Table = (function () {{
+        var self = {{}};
+        var $container;
+        self.init = function (container) {{
+            $container = container;
+            datatableExtension.init($container, '#hf-{id}-start', '#hf-{id}-length');
+            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname, false);
+            bindEvents();
+        }};
                                 
-                                {RenderColumns(columns, id, deleteUrl, editUrl)}
+        {RenderColumns(columns, id, deleteUrl, editUrl)}
 
-                                function bindEvents() {{
-                                    $container.on('click', '.btn-delete', function (e) {{
-                                            e.preventDefault();
-                                            var r = confirm('{confirmDeletePhrase}');
-                                            if (r) {{
-                                                global.ajaxPost($(this).prop('href'), {{}}, function (data) {{
-                                                    datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname);
-                                                }});
-                                            }}
-                                        }});
-                                    }}
+        function bindEvents() {{
+            $container.on('click', '.btn-delete', function (e) {{
+                    e.preventDefault();
+                    var r = confirm('{confirmDeletePhrase}');
+                    if (r) {{
+                        global.ajaxPost($(this).prop('href'), {{}}, function (data) {{
+                            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname);
+                        }});
+                    }}
+                }});
+            }}
 
-                                    return self;
-                                }})();
+            return self;
+        }})();
 
-                                $(d).ready(function () {{ {id}Table.init($('#{id}-list')); }});
+        $(d).ready(function () {{ 
+            {id}Table.init($('#{id}-list')); 
+        }});
 
-                            }})(window.document, jQuery);
-                        </script>");
+    }})(window.document, jQuery);
+</script>");
             return new HtmlString(html.ToString());
 
 

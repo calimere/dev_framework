@@ -1,6 +1,8 @@
-﻿ using dev_framework.Form.Model.Datatable;
+﻿using Azure.Core;
+using dev_framework.Form.Model.Datatable;
 using dev_framework.Manager;
 using dev_framework.Message.Model;
+using Discord;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -262,7 +264,64 @@ namespace dev_framework.Database.Repository
 
         #region SQL
 
-        protected string CreateWhereClauseFromCommand(List<KeyValuePair<string, object>> dic)
+        //protected string CreateWhereClauseFromCommandDynamicLinq(List<KeyValuePair<string, object>> dic)
+        //{
+        //    var lst = new List<string>();
+        //    foreach (KeyValuePair<string, object> item in dic)
+        //    {
+        //        if (item.Value.GetType() == typeof(string))
+        //        {
+        //            var value = (string)item.Value;
+        //            if (value.Contains("%"))
+        //                lst.Add(string.Format(" {1} like '{0}' ", value, item.Key));
+        //            else
+        //                lst.Add(string.Format(" {1} = '{0}' ", value, item.Key));
+        //        }
+        //        else if (item.Value.GetType() == typeof(DateTime))
+        //        {
+        //            var value = (DateTime)item.Value;
+        //            var convertedDate = string.Format("{0}-{1}-{2} 00:00:00.0000000", value.Year, value.Month, value.Day);
+        //            lst.Add(string.Format(" {1} = '{0}' ", convertedDate, item.Key));
+        //        }
+        //        else if (item.Value.GetType() == typeof(int))
+        //        {
+        //            var value = (int)item.Value;
+        //            lst.Add(string.Format(" {1} = '{0}' ", value, item.Key));
+        //        }
+        //        else if (item.Value.GetType() == typeof(object[]))
+        //        {
+        //            var value = (object[])item.Value;
+        //            if (value.Any())
+        //                lst.Add(string.Format(" {1} in ({0}) ", string.Join(",", value), item.Key));
+        //        }
+        //        else if (item.Value.GetType() == typeof(SqlObjectOperator))
+        //        {
+        //            var value = (SqlObjectOperator)item.Value;
+        //            if (value.Value.GetType() == typeof(int))
+        //            {
+        //                var v = (int)value.Value;
+        //                lst.Add(string.Format(" {2} {1} '{0}' ", v, value.Operator, item.Key));
+        //            }
+        //            else if (value.Value.GetType() == typeof(DateTime))
+        //            {
+        //                var date = (DateTime)value.Value;
+        //                var convertedDate = string.Format("{0}-{1}-{2} 00:00:00.0000000", date.Year, date.Month, date.Day);
+        //                lst.Add(string.Format(" {2} {1} '{0}' ", convertedDate, value.Operator, item.Key));
+        //            }
+        //        }
+        //    }
+
+        //    if (addWhereTerm)
+        //        return lst.Any()
+        //            ? string.Format(" where {0}", string.Join("and", lst))
+        //            : string.Empty;
+        //    else
+        //        return lst.Any()
+        //        ? string.Format(" {0}", string.Join("and", lst))
+        //        : string.Empty;
+        //}
+
+        protected string CreateWhereClauseFromCommand(List<KeyValuePair<string, object>> dic, bool addWhereTerm = true)
         {
             var lst = new List<string>();
             foreach (KeyValuePair<string, object> item in dic)
@@ -308,7 +367,15 @@ namespace dev_framework.Database.Repository
                     }
                 }
             }
-            return lst.Any() ? string.Format(" where {0}", string.Join("and", lst)) : string.Empty;
+
+            if (addWhereTerm)
+                return lst.Any()
+                    ? string.Format(" where {0}", string.Join("and", lst))
+                    : string.Empty;
+            else
+                return lst.Any()
+                ? string.Format(" {0}", string.Join("and", lst))
+                : string.Empty;
         }
 
         protected string CreateOffsetClauseFromCommand(string orderByField, int start, int length)
@@ -335,6 +402,39 @@ namespace dev_framework.Database.Repository
             }
 
             return str;
+        }
+
+        protected int GetToTalFromCommand(string requete)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName, requete);
+
+            var retour = 0;
+            var conn = _dbContext.Database.GetDbConnection();
+            try
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = requete.Contains("{0}")
+                        ? string.Format(requete, "count(*)")
+                        : requete;
+
+                    var reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            retour = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { _logger.Error("Erreur lors de l'exécution de la requête SQL.", ex); }
+            finally { conn.Close(); }
+
+            _logger.Fin(methodName, startTime);
+            return retour;
         }
 
         #endregion
