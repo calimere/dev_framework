@@ -362,7 +362,7 @@ namespace dev_framework.Database.Repository
                     else if (value.Value.GetType() == typeof(DateTime))
                     {
                         var date = (DateTime)value.Value;
-                        var convertedDate = string.Format("{0}-{1}-{2} 00:00:00.0000000", date.Year, date.Month, date.Day);
+                        var convertedDate = date.ToSqlDate(false);
                         lst.Add(string.Format(" {2} {1} '{0}' ", convertedDate, value.Operator, item.Key));
                     }
                 }

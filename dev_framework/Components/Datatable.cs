@@ -17,11 +17,9 @@ namespace dev_framework.Components
             switch (column.ETypeColumn)
             {
                 case ETypeColumn.Normal:
-                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, title:'{column.Title}', orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()} }});";
-                case ETypeColumn.Link:
-                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}}});";
+                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, title:'{column.Title}', name:""{column.data}"", orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()} }});";
                 case ETypeColumn.Custom:
-                    return $@"retour.push({{""autoWidth"": {column.AutoWidth.ToString().ToLower()}, orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: function (d, t, r) {{
+                    return $@"retour.push({{""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, name:""{column.data}"", orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: function (d, t, r) {{
                         return '{column.Render}';
                         }} }});";
             }
@@ -64,20 +62,26 @@ namespace dev_framework.Components
 
                 if (item.searchable)
                 {
-                    if (item.Options != null && item.Options.Any())
+                    switch (item.ETagType)
                     {
-                        searchInputs.AppendLine("<th>");
-                        searchInputs.AppendLine("<select class=\"form-control\">");
-                        searchInputs.AppendLine("<option value=\"\">Sélectionner</option>");
-                        foreach (var option in item.Options)
-                        {
-                            searchInputs.AppendLine($"<option value=\"{option.Value}\" {(option.Selected ? "selected" : "")}>{option.Text}</option>");
-                        }
-                        searchInputs.AppendLine("</select>");
-                        searchInputs.AppendLine("</th>");
+                        case ETagType.Select:
+                            searchInputs.AppendLine("<th>");
+                            searchInputs.AppendLine($"<select name=\"select-{item.data}\" class=\"form-control\">");
+                            searchInputs.AppendLine("<option value=\"\">Sélectionner</option>");
+                            if (item.Options != null)
+                            {
+                                foreach (var option in item.Options)
+                                {
+                                    searchInputs.AppendLine($"<option value=\"{option.Value}\" {(option.Selected ? "selected" : "")}>{option.Text}</option>");
+                                }
+                            }
+                            searchInputs.AppendLine("</select>");
+                            searchInputs.AppendLine("</th>");
+                            break;
+                        case ETagType:
+                            searchInputs.AppendLine($"<th><input type=\"{item.EInputType.ToString().ToLower()}\" placeholder=\"\" class=\"form-control\" name=\"input-{item.data}\" value=\"{item.search.value}\" /></th>");
+                            break;
                     }
-                    else
-                        searchInputs.AppendLine($"<th><input type=\"text\" placeholder=\"\" class=\"form-control\" value=\"{item.search.value}\" /></th>");
                 }
                 else
                     searchInputs.AppendLine("<th></th>");

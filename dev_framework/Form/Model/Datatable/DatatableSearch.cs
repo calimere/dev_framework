@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace dev_framework.Form.Model.Datatable
 
     public class DataTableColumn
     {
+
         // côté js
         public string data { get; set; }
         public string name { get; set; }
@@ -32,6 +34,8 @@ namespace dev_framework.Form.Model.Datatable
         public bool TargetBlank { get; set; }
         public bool IsKey { get; set; }
         public string Title { get; set; }
+        public ETagType ETagType { get; set; }
+        public EInputType EInputType { get; set; }
 
         public DataTableColumn()
         {
@@ -42,10 +46,19 @@ namespace dev_framework.Form.Model.Datatable
             ETypeColumn = ETypeColumn.Normal;
         }
     }
+
+    public enum ETagType
+    {
+        Input, Select, Button, Link
+
+    }
+    public enum EInputType
+    {
+        Text, Number, Date, Email, Password, Hidden
+    }
     public enum ETypeColumn
     {
         Normal,
-        Link,
         Custom
     }
 
