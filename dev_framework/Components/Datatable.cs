@@ -17,11 +17,13 @@ namespace dev_framework.Components
             switch (column.ETypeColumn)
             {
                 case ETypeColumn.Normal:
-                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, title:'{column.Title}', name:""{column.data}"", orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()} }});";
+                    return $@"retour.push({{ ""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, title:'{column.Title}', name:""{column.data}"", orderable: {column.orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()} }});";
                 case ETypeColumn.Custom:
-                    return $@"retour.push({{""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, name:""{column.data}"", orderable: {column.Orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: function (d, t, r) {{
+                    return $@"retour.push({{""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, name:""{column.data}"", orderable: {column.orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: function (d, t, r) {{
                         return '{column.Render}';
                         }} }});";
+                case ETypeColumn.Function:
+                    return $@"retour.push({{""data"": ""{column.data}"", ""autoWidth"": {column.AutoWidth.ToString().ToLower()}, name:""{column.data}"", orderable: {column.orderable.ToString().ToLower()}, searchable:{column.searchable.ToString().ToLower()}, render: {column.Render} }});";
             }
             return "";
         }

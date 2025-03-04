@@ -27,7 +27,10 @@ namespace dev_framework.Form.Model.Datatable
         //côté razor / C#
         public IEnumerable<SelectListItem> Options { get; set; }
         public ETypeColumn ETypeColumn { get; set; }
-        public bool Orderable { get; set; }
+        public bool Orderable
+        {
+            get { return orderable; }
+        }
         public bool AutoWidth { get; set; }
         public string Render { get; set; }
         public string[] CssClass { get; set; }
@@ -40,7 +43,6 @@ namespace dev_framework.Form.Model.Datatable
         public DataTableColumn()
         {
             AutoWidth = false;
-            Orderable = false;
             TargetBlank = false;
             IsKey = false;
             ETypeColumn = ETypeColumn.Normal;
@@ -59,7 +61,8 @@ namespace dev_framework.Form.Model.Datatable
     public enum ETypeColumn
     {
         Normal,
-        Custom
+        Custom,
+        Function
     }
 
     public class DatatableOrder
