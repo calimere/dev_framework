@@ -73,7 +73,11 @@ namespace System
         {
             return obj.Select(m => new SelectListItem { Text = m.GetType().GetProperty(text).GetValue(m).ToString(), Value = m.GetType().GetProperty(value).GetValue(m).ToString() }).ToArray();
         }
-        
+        public static SelectListItem[] ToSelectListItems<T>(this IEnumerable<T> obj, string value, string text, string selectedValue)
+        {
+            return obj.Select(m => new SelectListItem { Text = m.GetType().GetProperty(text).GetValue(m).ToString(), Value = m.GetType().GetProperty(value).GetValue(m).ToString(), Selected = m.GetType().GetProperty(value).GetValue(m).ToString() == selectedValue }).ToArray();
+        }
+
 
         public class WeekPeriod
         {
