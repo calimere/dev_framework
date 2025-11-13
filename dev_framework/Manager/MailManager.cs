@@ -69,6 +69,17 @@ namespace dev_framework.Manager
             _serilogManager.Fin(SerilogManager.GetCurrentMethod(), mail, startTime);
             return true;
         }
+        public async Task<bool> SendMailAsync(MailMessage mail)
+        {
+            try
+            {
+                return SendMailInterne(mail);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Le mail n'a pas pu partir", ex);
+            }
+        }
         [Obsolete("Utiliser la méthode SendMail(MailMessage mail)", true)]
         public bool SendMail(List<string> tos, string subject, string body, bool ssl = true, string from = "")
         {
