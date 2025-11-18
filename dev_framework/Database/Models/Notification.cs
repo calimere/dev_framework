@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace dev_framework.Database.Models
 {
-    public abstract class Notification : BusinessObject 
+    public abstract class ANotification : BusinessObject 
     {
         [Key]
         public int ntf_id { get; set; }
@@ -26,19 +26,21 @@ namespace dev_framework.Database.Models
 
         public string ntf_data { get; set; }
 
-        public Notification()
+        public ANotification()
         {
             ntf_is_read = false;
         }
     }
 
-    public class NotificationUser<T,W> : BusinessObject where T : Notification where W : AUser
+    public class NotificationUser<T,W> : BusinessObject where T : ANotification where W : AUser
     {
         [Key]
         public int ntu_id { get; set; }
         public T Notification { get; set; }
+        
         [ForeignKey("Notification")]
         public int ntf_id { get; set; }
+        
         public W User { get; set; }
         [ForeignKey("User")]
         public string usr_id { get; set; }
