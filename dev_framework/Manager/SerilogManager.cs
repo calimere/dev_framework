@@ -164,6 +164,20 @@ namespace dev_framework.Manager
             if (throwEx)
                 throw ex;
         }
+        public void ErrorById(string methodName, Exception ex, string id, bool throwEx = true)
+        {
+            StringBuilder log = new StringBuilder();
+            log.Append("[Error]");
+            log.Append($" : [{methodName}] -- ID : {id}");
+            log.AppendLine($"Exception : {JsonConvert.SerializeObject(ex, Formatting.Indented)}");
+            GetLogger().Error(log.ToString());
+
+            if (!string.IsNullOrEmpty(_discordUrl))
+                AlertManager.Current.PublishDiscordWebHook(ex, id, _discordUrl);
+
+            if (throwEx)
+                throw ex;
+        }
         public void Error(string methodName, Exception ex, bool throwEx = true)
         {
             StringBuilder log = new StringBuilder();
