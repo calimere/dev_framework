@@ -118,7 +118,7 @@ namespace dev_framework.Components
             return new HtmlString(html.ToString());
         }
 
-        public static IHtmlContent RenderJS(this IHtmlHelper htmlHelper, string id, DataTableColumn[] columns, string confirmDeletePhrase, string deleteUrl, string editUrl)
+        public static IHtmlContent RenderJS(this IHtmlHelper htmlHelper, string id, DataTableColumn[] columns, string confirmDeletePhrase, string deleteUrl, string editUrl, string loadCallback = null, string initCallback = null, bool withFilter = true)
         {
             var html = new StringBuilder();
             html.AppendLine($@"
@@ -131,7 +131,7 @@ namespace dev_framework.Components
         self.init = function (container) {{
             $container = container;
             datatableExtension.init($container, '#hf-{id}-start', '#hf-{id}-length');
-            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname, false);
+            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname, undefined, {withFilter.ToString().ToLower()} {(!string.IsNullOrEmpty(loadCallback) ? "," + loadCallback : "")} {(!string.IsNullOrEmpty(initCallback) ? "," + initCallback : "")});
             bindEvents();
         }};
                                 
@@ -143,7 +143,7 @@ namespace dev_framework.Components
                     var r = confirm('{confirmDeletePhrase}');
                     if (r) {{
                         global.ajaxPost($(this).prop('href'), {{}}, function (data) {{
-                            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname);
+                            datatableExtension.drawDatatable(get{id}Columns(), '#{id}-filters', '#{id}-table', location.pathname, undefined, {withFilter.ToString().ToLower()} {(!string.IsNullOrEmpty(loadCallback) ? "," + loadCallback : "")} {(!string.IsNullOrEmpty(initCallback) ? "," + initCallback : "")});
                         }});
                     }}
                 }});
