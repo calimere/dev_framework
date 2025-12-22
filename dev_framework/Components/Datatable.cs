@@ -80,7 +80,7 @@ namespace dev_framework.Components
                             searchInputs.AppendLine("</select>");
                             searchInputs.AppendLine("</th>");
                             break;
-                        case ETagType:
+                        case ETagType.Input: 
                             searchInputs.AppendLine($"<th><input type=\"{item.EInputType.ToString().ToLower()}\" placeholder=\"\" class=\"form-control\" name=\"input-{item.data}\" value=\"{item.search.value}\" /></th>");
                             break;
                     }
