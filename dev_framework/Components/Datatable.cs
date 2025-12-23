@@ -45,7 +45,7 @@ namespace dev_framework.Components
                 : "";
 
             sb.AppendLine($@"retour.push({{
-                            ""autoWidth"": false, orderable: false, searchable:false, render: function (d, t, r) {{
+                            ""data"":"""", ""autoWidth"": false, orderable: false, searchable:false, render: function (d, t, r) {{
                                 return '<a href=""{editUrl}?id=' + r.{key} + '"" class=""btn btn-primary me-2 btn-edit"" data-content=""edit-{id}-container""><i class=""bx bx-edit""></i></a>' + '{delete}';
                             }}
                         }}); return retour; }}");
@@ -99,8 +99,8 @@ namespace dev_framework.Components
                                 <div class=""row"">
                                     <div class=""col-md-12"">
                                         <div id=""{id}-filters"" class=""dNone"">
-                                            <input type=""hidden"" id=""hf-{id}-length"" value=""{length}"" />
-                                            <input type=""hidden"" id=""hf-{id}-start"" value=""{start}""/>
+                                            <input type=""hidden"" name=""length"" id=""hf-{id}-length"" value=""{length}"" />
+                                            <input type=""hidden"" name=""start"" id=""hf-{id}-start"" value=""{start}""/>
                                         </div>
                                         <table class=""table"" id=""{id}-table"" data-url=""{loadUrl}"">
                                             <thead>
