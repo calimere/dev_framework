@@ -104,7 +104,7 @@ namespace dev_framework.Components
                                         </div>
                                         <table class=""table"" id=""{id}-table"" data-url=""{loadUrl}"">
                                             <thead>
-                                                <tr>{searchInputs}</tr>
+                                                <tr class=""search-inputs"">{searchInputs}</tr>
                                                 <tr>
                                                     {str}
                                                 </tr>
