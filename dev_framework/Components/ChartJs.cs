@@ -1,4 +1,5 @@
 ﻿using dev_framework.Components.Model.ChartJS;
+using DinkToPdf;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -7,7 +8,7 @@ namespace dev_framework.Components
 {
     public static class ChartExtensions
     {
-        public static Chart Chart(this IHtmlHelper htmlHelper, string id, string type, string title, ChartData data) { return new Chart(htmlHelper, id, type, title, data); }
+        public static Chart Chart(this IHtmlHelper htmlHelper, string id, string type, string title, ChartData data, string unit = "") { return new Chart(htmlHelper, id, type, title, data, unit); }
     }
 
     public class Chart : IDisposable
@@ -15,7 +16,7 @@ namespace dev_framework.Components
         private readonly TextWriter _writer;
 
         public Chart() { }
-        public Chart(IHtmlHelper htmlHelper, string id, string type, string title, ChartData data)
+        public Chart(IHtmlHelper htmlHelper, string id, string type, string title, ChartData data, string unit)
         {
             _writer = htmlHelper.ViewContext.Writer;
             var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
@@ -38,7 +39,8 @@ namespace dev_framework.Components
                             title: {{
                                 display: {(!string.IsNullOrEmpty(title) ? "true" : "false")},
                                 text: '{title}'
-                            }}
+                            }},
+                            {(!string.IsNullOrEmpty(unit) ? $"tooltip: {{ callbacks: {{ label: (tooltipItem) => tooltipItem.formattedValue { " + \" " + unit + "\"" }}} }}" : "")}
                         }}
                     }}
                 }});
