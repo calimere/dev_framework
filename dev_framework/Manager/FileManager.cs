@@ -46,6 +46,7 @@ namespace dev_framework.Manager
                         string error = await response.Content.ReadAsStringAsync();
                         Console.WriteLine($"Erreur : {response.StatusCode}");
                         Console.WriteLine(error);
+                        return new IOMessage(EIOMessage.Error) { ReturnValue = new { FilePath = filePath }, Exception = new Exception($"Erreur : {response.StatusCode} - {error}") };
                     }
                 }
 

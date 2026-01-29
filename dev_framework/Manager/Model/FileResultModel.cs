@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dev_framework.Message.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace dev_framework.Manager.Model
         public string MimeType { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
+        public IOMessage IOMessage { get; set; }
     }
 }
