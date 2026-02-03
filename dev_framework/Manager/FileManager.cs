@@ -31,17 +31,7 @@ namespace dev_framework.Manager
                     var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
                     var response = await httpClient.PostAsync(pythonServer, content);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Lire le contenu PDF (stream)
-                        byte[] pdfBytes = await response.Content.ReadAsByteArrayAsync();
-
-                        // Enregistrer dans un fichier
-                        await System.IO.File.WriteAllBytesAsync("output.pdf", pdfBytes);
-
-                        Console.WriteLine("PDF téléchargé et sauvegardé en output.pdf");
-                    }
-                    else
+                    if (!response.IsSuccessStatusCode)
                     {
                         string error = await response.Content.ReadAsStringAsync();
                         Console.WriteLine($"Erreur : {response.StatusCode}");
