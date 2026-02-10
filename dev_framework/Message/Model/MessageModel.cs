@@ -13,8 +13,8 @@ namespace dev_framework.Message.Model
         public Exception[] Exceptions { get; set; }
 
         public string Id { get; set; }
-        public string Statut { get; set; }
-        public string StatutClass { get; set; }
+        public string Statut { get { return MessageStatut.ToString(); } }
+        public string StatutClass { get { return MessageStatut.GetDescription(); } }
         public MessageStatut MessageStatut { get; set; }
 
         public MessageModel()
@@ -30,23 +30,16 @@ namespace dev_framework.Message.Model
         public MessageModel(MessageStatut retour)
         {
             MessageStatut = retour;
-            Statut = retour.ToString();
-            StatutClass = retour.ToDescription();
         }
         public MessageModel(MessageStatut retour, string message)
         {
             MessageStatut = retour;
-            Statut = retour.ToString();
-            StatutClass = retour.ToDescription();
             var dic = new Dictionary<string, string>();
             dic.Add(Statut, message);
             SetMessage(dic);
         }
         public MessageModel(string message, string statut, string statutClass)
         {
-            Statut = statut;
-            StatutClass = statutClass;
-
             var dic = new Dictionary<string, string>();
             dic.Add(Statut, message);
             SetMessage(dic);

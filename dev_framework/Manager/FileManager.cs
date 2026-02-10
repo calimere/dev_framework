@@ -44,12 +44,12 @@ namespace dev_framework.Manager
             }
             catch (HttpRequestException ex)
             {
-                _serilogManager.Error("Erreur de requête HTTP lors de la génération du PDF", ex);
+                _serilogManager.Error("Erreur de requête HTTP lors de la génération du PDF", ex, false);
                 return new IOMessage(EIOMessage.Error) { Exception = ex };
             }
             catch (Exception ex)
             {
-                _serilogManager.Error("Erreur générale lors de la génération du PDF", ex);
+                _serilogManager.Error("Erreur générale lors de la génération du PDF", ex, false);
                 return new IOMessage(EIOMessage.Error) { Exception = ex };
             }
         }
