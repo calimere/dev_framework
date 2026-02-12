@@ -27,7 +27,7 @@ namespace dev_framework.Manager
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var json = new { url = url, filePath = filePath };
+                    var json = new { url = url, filename = filePath, page_numbering = "true" };
                     var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
                     var response = await httpClient.PostAsync(pythonServer, content);
 
