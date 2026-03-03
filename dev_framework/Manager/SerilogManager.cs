@@ -64,6 +64,23 @@ namespace dev_framework.Manager
             }
         }
 
+        public DateTime Info(string methodName, params object[] parameters)
+        {
+            StringBuilder log = new StringBuilder();
+            log.Append("[INFO]");
+            log.AppendFormat(" : [{0}]", methodName);
+
+#if DEBUG
+            if (parameters != null && parameters.Any())
+            {
+                var serialized = JsonConvert.SerializeObject(parameters, Formatting.Indented);
+                log.AppendLine(serialized);
+            }
+#endif
+            GetLogger().Information(log.ToString());
+            return DateTime.Now;
+        }
+
         /// <summary>
         /// Logs the start of a method execution.
         /// </summary>
