@@ -8,6 +8,8 @@ namespace dev_framework.Database
     public interface IGenericRepository<W, T> where W : DbContext where T : class
     {
         DatabaseMessage Add(T entity);
+        DatabaseMessage Add(T[] entity);
+
         DatabaseMessage Update(T entity);
         T GetItem(int id);
         T GetItem(string id);
