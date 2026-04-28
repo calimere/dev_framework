@@ -1,24 +1,41 @@
-﻿using MQTTnet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace dev_framework.MQTT
 {
     public class MqttMessageRouter
     {
-        private readonly List<(string filter, Action<string, int, string> handler)> _routes = new();
+        private readonly List<(string filter, Func<string, int, string, Task> handler)> _routes = new();
         private readonly bool _callAllMatches;
 
-        /// <param name="callAllMatches">Si true appelle tous les handlers qui matchent; si false s'arrête au premier match.</param>
+        /// <param name="callAllMatches">
+        /// Si true, appelle tous les handlers qui matchent.
+        /// Si false, s'arrête au premier match.
+        /// </param>
         public MqttMessageRouter(bool callAllMatches = false)
         {
             _callAllMatches = callAllMatches;
         }
 
+        // ── Enregistrement ────────────────────────────────────────────────
+
+        /// <summary>Enregistre un handler synchrone.</summary>
         public void Register(string topicFilter, Action<string, int, string> handler)
+        {
+            if (string.IsNullOrWhiteSpace(topicFilter)) throw new ArgumentException("topicFilter required", nameof(topicFilter));
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+            _routes.Add((topicFilter, (topic, id, payload) =>
+            {
+                handler(topic, id, payload);
+                return Task.CompletedTask;
+            }
+            ));
+        }
+
+        /// <summary>Enregistre un handler asynchrone.</summary>
+        public void Register(string topicFilter, Func<string, int, string, Task> handler)
         {
             if (string.IsNullOrWhiteSpace(topicFilter)) throw new ArgumentException("topicFilter required", nameof(topicFilter));
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -26,7 +43,17 @@ namespace dev_framework.MQTT
             _routes.Add((topicFilter, handler));
         }
 
+        // ── Dispatch ──────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Dispatch synchrone (rétrocompatibilité).
+        /// Préférer DispatchAsync dans un contexte async.
+        /// </summary>
         public void Dispatch(string topic, int id, string payload)
+            => DispatchAsync(topic, id, payload).GetAwaiter().GetResult();
+
+        /// <summary>Dispatch asynchrone.</summary>
+        public async Task DispatchAsync(string topic, int id, string payload)
         {
             bool matchedAny = false;
 
@@ -34,25 +61,22 @@ namespace dev_framework.MQTT
             {
                 if (TopicMatches(topic, filter))
                 {
-                    handler(topic, id, payload);
+                    await handler(topic, id, payload);
                     matchedAny = true;
-                    if (!_callAllMatches) return; // si on ne veut qu'un seul handler, on sort
+                    if (!_callAllMatches) return;
                 }
             }
 
             if (!matchedAny)
-            {
-                // comportement par défaut : log
                 Console.WriteLine($"(No handler) {topic} -> {payload}");
-            }
         }
 
-        // Implémentation robuste du matching MQTT (+ et #)
+        // ── Pattern matching ──────────────────────────────────────────────
+
+        /// <summary>Vérifie si un topic correspond à un filtre MQTT (supporte + et #).</summary>
         public static bool TopicMatches(string topic, string topicFilter)
         {
             if (topic == null || topicFilter == null) return false;
-
-            // Cas trivial
             if (topicFilter == "#") return true;
 
             var tLevels = topic.Split('/');
@@ -65,37 +89,21 @@ namespace dev_framework.MQTT
                 var t = tLevels[ti];
 
                 if (f == "#")
-                {
-                    // # doit être le dernier niveau du filtre pour être valide
                     return fi == fLevels.Length - 1;
-                }
-                else if (f == "+")
-                {
-                    // + match un niveau ; on continue
-                    fi++; ti++;
-                    continue;
-                }
-                else
-                {
-                    // correspondance littérale
-                    if (!string.Equals(f, t, StringComparison.Ordinal)) return false;
-                    fi++; ti++;
-                    continue;
-                }
+
+                if (f == "+") { fi++; ti++; continue; }
+
+                if (!string.Equals(f, t, StringComparison.Ordinal)) return false;
+
+                fi++; ti++;
             }
 
-            // si on a parcouru tous les niveaux du filtre :
             if (fi == fLevels.Length)
-            {
-                // topic doit aussi être totalement consommé pour matcher (sauf si filtre se termine par "#" qui aurait été géré ci-dessus)
                 return ti == tLevels.Length;
-            }
 
-            // si il reste un seul niveau dans le filtre et que c'est "#", ça matche (ce cas arrive quand topic est plus court)
             if (fi == fLevels.Length - 1 && fLevels[fi] == "#") return true;
 
             return false;
         }
     }
-
 }
