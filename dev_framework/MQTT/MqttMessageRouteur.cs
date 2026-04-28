@@ -9,7 +9,7 @@ namespace dev_framework.MQTT
 {
     public class MqttMessageRouter
     {
-        private readonly List<(string filter, Action<string, string> handler)> _routes = new();
+        private readonly List<(string filter, Action<string, int, string> handler)> _routes = new();
         private readonly bool _callAllMatches;
 
         /// <param name="callAllMatches">Si true appelle tous les handlers qui matchent; si false s'arrête au premier match.</param>
@@ -18,7 +18,7 @@ namespace dev_framework.MQTT
             _callAllMatches = callAllMatches;
         }
 
-        public void Register(string topicFilter, Action<string, string> handler)
+        public void Register(string topicFilter, Action<string, int, string> handler)
         {
             if (string.IsNullOrWhiteSpace(topicFilter)) throw new ArgumentException("topicFilter required", nameof(topicFilter));
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -26,7 +26,7 @@ namespace dev_framework.MQTT
             _routes.Add((topicFilter, handler));
         }
 
-        public void Dispatch(string topic, string payload)
+        public void Dispatch(string topic, int id, string payload)
         {
             bool matchedAny = false;
 
@@ -34,7 +34,7 @@ namespace dev_framework.MQTT
             {
                 if (TopicMatches(topic, filter))
                 {
-                    handler(topic, payload);
+                    handler(topic, id, payload);
                     matchedAny = true;
                     if (!_callAllMatches) return; // si on ne veut qu'un seul handler, on sort
                 }
