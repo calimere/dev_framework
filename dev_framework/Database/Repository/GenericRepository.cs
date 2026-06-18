@@ -129,6 +129,17 @@ namespace dev_framework.Database.Repository
             _logger.Fin(methodName, entity, startTime);
             return entity;
         }
+        public T GetItem(Guid id)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName, id);
+            T? entity = null;
+            try { entity = _dbContext.Set<T>().Find(id); }
+            catch (Exception ex) { _logger.Error(methodName, ex, id.ToString()); }
+            _logger.Fin(methodName, entity, startTime);
+            return entity;
+        }
+
 
         /// <summary>
         /// Asynchronously retrieves an entity from the database by its ID.
@@ -153,6 +164,16 @@ namespace dev_framework.Database.Repository
             T? entity = null;
             try { entity = await _dbContext.Set<T>().FindAsync(id); }
             catch (Exception ex) { _logger.Error(methodName, ex, id); }
+            _logger.Fin(methodName, entity, startTime);
+            return entity;
+        }
+        public async Task<T> GetItemAsync(Guid id)
+        {
+            var methodName = SerilogManager.GetCurrentMethod();
+            var startTime = _logger.Debut(methodName, id);
+            T? entity = null;
+            try { entity = await _dbContext.Set<T>().FindAsync(id); }
+            catch (Exception ex) { _logger.Error(methodName, ex, id.ToString()); }
             _logger.Fin(methodName, entity, startTime);
             return entity;
         }
@@ -260,6 +281,10 @@ namespace dev_framework.Database.Repository
         public IEnumerable<T> GetItems(string[] ids, string key)
         {
             return DbContextExtensions.FindEntities<T, string>(_dbContext, ids);
+        }
+        public IEnumerable<T> GetItems(Guid[] ids, string key)
+        {
+            return DbContextExtensions.FindEntities<T, Guid>(_dbContext, ids);
         }
 
         #region SQL

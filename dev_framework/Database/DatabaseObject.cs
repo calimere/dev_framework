@@ -14,12 +14,23 @@ namespace dev_framework.Database
 
     public class SupervisedDatabaseObject : BusinessObject
     {
+        public string created_by { get; set; } // si guid empty => création système
         public DateTime modified { get; set; }
         public string modified_by { get; set; }
 
         public SupervisedDatabaseObject()
         {
             modified = DateTime.Now;
+            created_by = Guid.Empty.ToString();
+        }
+    }
+
+    public class OnlyInsertDatabaseObject : DatabaseObject
+    {
+        public string created_by { get; set; } // si guid empty => création système
+        public OnlyInsertDatabaseObject()
+        {
+            created_by = Guid.Empty.ToString();
         }
     }
 
