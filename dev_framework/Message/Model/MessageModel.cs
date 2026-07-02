@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Web;
-using dev_framework.Message.Model;
 
 namespace dev_framework.Message.Model
 {
