@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Manager
+namespace ui.utils.Manager
 {
     public class AlertManager : Singleton<AlertManager>
     {

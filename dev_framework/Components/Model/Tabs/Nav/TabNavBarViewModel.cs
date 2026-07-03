@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Components.Model.Tabs.Nav
+namespace ui.utils.Components.Model.Tabs.Nav
 {
     public class TabNavBarViewModel : TabViewModel
     {

@@ -9,13 +9,12 @@ using System.Runtime.CompilerServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using dev_framework.Manager.Model;
-using dev_framework.Message.Model;
+using ui.utils.Manager.Model;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Core;
 
-namespace dev_framework.Manager
+namespace ui.utils.Manager
 {
     public enum ESerilogType { Console, File }
 

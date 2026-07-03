@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Form.Model.Html
+namespace ui.utils.Form.Model.Html
 {
     public class CheckboxFilterModel
     {

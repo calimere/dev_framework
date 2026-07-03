@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace dev_framework.Security
+namespace ui.utils.Security
 {
     public class PasswordManager : Singleton<PasswordManager>
     {

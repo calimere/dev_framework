@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace dev_framework.MQTT
+namespace ui.utils.MQTT
 {
     public class MqttMessageRouter
     {

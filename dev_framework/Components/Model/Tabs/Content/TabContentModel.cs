@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Components.Model.Tabs.Content
+namespace ui.utils.Components.Model.Tabs.Content
 {
     public class TabContentModel : TabModel
     {

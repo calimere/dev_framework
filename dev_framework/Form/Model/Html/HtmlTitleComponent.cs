@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace dev_framework.Form.Model.Html
+namespace ui.utils.Form.Model.Html
 {
     public class HtmlTitleComponent
     {

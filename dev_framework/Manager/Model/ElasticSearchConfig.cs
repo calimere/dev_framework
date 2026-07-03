@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Manager.Model
+namespace ui.utils.Manager.Model
 {
     public class ElasticSearchConfig
     {

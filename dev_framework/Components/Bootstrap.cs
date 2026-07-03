@@ -1,14 +1,14 @@
-﻿using dev_framework.Components.Model.Card;
-using dev_framework.Components.Model.Tabs.Content;
-using dev_framework.Components.Model.Tabs.Nav;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Primitives;
 using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
+using ui.utils.Components.Model.Card;
+using ui.utils.Components.Model.Tabs.Content;
+using ui.utils.Components.Model.Tabs.Nav;
 
-namespace dev_framework.Components
+namespace ui.utils.Components
 {
     public static class BootstrapExtensions
     {

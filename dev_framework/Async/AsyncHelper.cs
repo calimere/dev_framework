@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace dev_framework.Async
+namespace ui.utils.Async
 {
     public static class AsyncHelpers
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace dev_framework.Configuration
+namespace ui.utils.Configuration
 {
     public class ConfigurationServices
     {

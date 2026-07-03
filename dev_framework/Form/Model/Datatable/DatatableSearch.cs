@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Form.Model.Datatable
+namespace ui.utils.Form.Model.Datatable
 {
     public class DatatableSearch
     {

@@ -1,11 +1,12 @@
-﻿using dev_framework.Message.Model;
+﻿using ui.utils.Manager.Model;
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Manager.Model
+namespace ui.utils.Manager.Model
 {
     public class FileResultModel
     {
@@ -14,4 +15,6 @@ namespace dev_framework.Manager.Model
         public string FilePath { get; set; }
         public IOMessage IOMessage { get; set; }
     }
+
+    
 }

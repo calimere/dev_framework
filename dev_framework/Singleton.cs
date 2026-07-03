@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework
+namespace ui.utils
 {
 
     public abstract class Singleton<T> : IDisposable where T : Singleton<T>, new()

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace dev_framework.Services
+namespace ui.utils.Services
 {
     public class RedisService : IDisposable
     {

@@ -1,4 +1,4 @@
-﻿using dev_framework.Message.Model;
+﻿using ui.utils.Manager.Model;
 using DinkToPdf;
 using Newtonsoft.Json;
 using System;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Manager
+namespace ui.utils.Manager
 {
     public class FileManager
     {

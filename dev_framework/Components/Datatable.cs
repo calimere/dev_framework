@@ -1,4 +1,4 @@
-﻿using dev_framework.Form.Model.Datatable;
+﻿using ui.utils.Form.Model.Datatable;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Components
+namespace ui.utils.Components
 {
     public static class DatatableExtensions
     {

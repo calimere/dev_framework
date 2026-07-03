@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 
-namespace dev_framework.Manager
+namespace ui.utils.Manager
 {
     public class MailManager
     {

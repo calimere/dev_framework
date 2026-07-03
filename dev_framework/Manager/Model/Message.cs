@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Message.Model
+namespace ui.utils.Manager.Model
 {
     public abstract class Message
     {
@@ -17,5 +17,18 @@ namespace dev_framework.Message.Model
                 return (T)ReturnValue;
             return null;
         }
+    }
+
+    public class IOMessage : Message
+    {
+        public EIOMessage EIoMessage { get; }
+        public IOMessage(EIOMessage eIoMessage) { EIoMessage = eIoMessage; }
+    }
+
+    public enum EIOMessage
+    {
+        Success,
+        Error,
+        Warning
     }
 }

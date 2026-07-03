@@ -1,10 +1,10 @@
-﻿using dev_framework.Components.Model.ChartJS;
+﻿using ui.utils.Components.Model.ChartJS;
 using DinkToPdf;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace dev_framework.Components
+namespace ui.utils.Components
 {
     public static class ChartExtensions
     {

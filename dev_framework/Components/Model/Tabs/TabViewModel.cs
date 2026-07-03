@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Components.Model.Tabs
+namespace ui.utils.Components.Model.Tabs
 {
     public abstract class TabViewModel : ViewModel
     {

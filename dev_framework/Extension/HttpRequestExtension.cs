@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dev_framework.Extension
+namespace ui.utils.Extension
 {
     public static class HttpRequestExtension
     {
